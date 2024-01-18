@@ -1,0 +1,57 @@
+﻿@model Reminder
+
+<div class="container">
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">@Html.ActionLink("Home", "Index", "Home")</li>
+            <li class="breadcrumb-item active" aria-current="page">Edit</li>
+        </ol>
+    </nav>
+</div>
+
+<div class="card">
+    <div class="card-body bg-light">
+        <h4 class="card-title">Edit reminder</h4>
+
+        <form id="add-list-form" method="post" action="@Url.Action("UpdateReminder", "Reminder")">
+            <div class="row g-3 mb-2">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="reminderId" value="@Model.Id" />
+
+                <div class="col-md-6">
+                    <label>Reminder name</label>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Reminder name" value="@Model.Name" required />
+                </div>
+
+                <div class="col-md-6">
+                    <label>Reminder details</label>
+                    <input type="text" class="form-control" id="details" name="details" placeholder="Reminder details" value="@Model.Details" required />
+                </div>
+            </div>
+
+            <div class="row g-3 mb-2">
+                <div class="col-md-6">
+                    <label>Date Due</label>
+                    <input type="datetime-local" class="form-control" id="dateDue" name="dateDue" value="@(Model.DateDue.ToString("s"))" required />
+                </div>
+
+                <div class="col-md-6">
+                    <label>Priority</label>
+                    <select class="form-select" id="priority" name="priority" required>
+                        @{
+                            var values = Enum.GetValues(typeof(ReminderPriority)).Cast<ReminderPriority>();
+                            foreach (var value in values)
+                            {
+                                <option value="@value" selected="@(value == Model.Priority)">@value</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <button type="submit" class="btn btn-primary">Edit</button>
+            </div>
+        </form>
+    </div>
+</div>

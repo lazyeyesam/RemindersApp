@@ -1,0 +1,49 @@
+﻿@model LoginViewModel
+
+<div class="container">
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">@Html.ActionLink("Home", "Index", "Home")</li>
+            <li class="breadcrumb-item active" aria-current="page">Login</li>
+        </ol>
+    </nav>
+</div>
+
+@if (Model?.Error != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @Model.Error
+    </div>
+}
+
+<div class="card">
+    <div class="card-body bg-light">
+        <h4 class="card-title">Login</h4>
+
+        <form class="row g-3" id="add-list-form" method="post" action="@Url.Action("Login", "Account")">
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" name="returnUrl" value="@Model.ReturnUrl" />
+
+            <div class="col-md-6">
+                <input type="email" class="form-control" id="email" name="email" placeholder="Email" required />
+            </div>
+
+            <div class="col-md-6">
+                <input type="password" class="form-control" id="password" name="password" placeholder="Password" required />
+            </div>
+
+            <div class="col-md-6">
+                <button type="submit" class="btn btn-primary">Sign in</button>
+                
+                <a class="btn btn-outline-dark" href="@Url.Action("GoogleSignIn","Account")" role="button" style="text-transform:none">
+                    <img width="20px" style="margin-bottom:3px; margin-right:5px" alt="Google sign-in" src="~/img/g-logo.png" />
+                    Sign in with Google
+                </a>
+                                
+                @Html.ActionLink("Register", "Register", "Account", null, new { @class = "btn btn-success"})
+                
+            </div>
+        </form>
+    </div>
+</div>

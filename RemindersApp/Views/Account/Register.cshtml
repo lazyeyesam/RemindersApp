@@ -1,0 +1,45 @@
+﻿@model AppUserViewModel
+
+<div class="container">
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">@Html.ActionLink("Home", "Index", "Home")</li>
+            <li class="breadcrumb-item active" aria-current="page">Register</li>
+        </ol>
+    </nav>
+</div>
+
+@if (@Model.Error != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @Model.Error
+    </div>
+}
+
+<div class="card">
+    <div class="card-body bg-light">
+        <h4 class="card-title">Register</h4>
+
+        <form class="row g-3" id="add-list-form" method="post" action="@Url.Action("CreateUser", "Account")">
+            @Html.AntiForgeryToken()
+
+            <div class="col-md-4">
+                <input type="email" class="form-control" id="Email" name="Email" placeholder="Email" required />
+            </div>
+
+            <div class="col-md-4">
+                <input type="password" class="form-control" id="password" name="password" placeholder="Password" required />
+            </div>
+
+            <div class="col-md-4">
+                <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" placeholder="Confirm password" required />
+            </div>
+
+            <div class="col-md-6">
+                <button type="submit" class="btn btn-primary">Register</button>
+                @Html.ActionLink("Login", "Login", "Account", null, new { @class="btn btn-secondary" })
+            </div>
+
+        </form>
+    </div>
+</div>

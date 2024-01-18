@@ -1,0 +1,88 @@
+﻿@{
+    ViewData["Title"] = "Reminders";
+}
+
+@model ReminderList
+
+<div class="container">
+    <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">@Html.ActionLink("Home", "Index", "Home")</li>
+            <li class="breadcrumb-item active" aria-current="page">Reminders</li>
+        </ol>
+    </nav>
+</div>
+
+<div class="card mb-3">
+    <div class="card-body bg-light">
+        <h4 class="card-title">@Model.Name</h4>
+        <div class="bg-white">
+            @(Html
+            .Grid(Model.Reminders)
+            .Build(columns =>
+            {
+                columns.Add(model => model.Name).Titled("Name");
+                columns.Add(model => model.Details).Titled("Details");
+                columns.Add(model => model.DateDue).Titled("Date Due");
+                columns.Add(model => model.Priority).Titled("Priority");
+                columns.Add(model => Html.ActionLink("Edit", "Edit", "Reminder", new { model.Id }, new { @class = "btn btn-secondary" })).Titled("Edit").Width("7%");
+                columns.Add(model => Html.ActionLink("Complete", "Complete", "Reminder", new { model.Id }, new { @class = "btn btn-success"})).Titled("Complete").Width("7%");
+                columns.Add(model => Html.ActionLink("Delete", "Delete", "Reminder", new { model.Id }, new { @class = "btn btn-danger"})).Titled("Delete").Width("7%");
+            })
+            .Using(GridFilterMode.Excel)
+            .Empty("No reminders found")
+            .Filterable()
+            .Sortable()
+            .Pageable()
+            .RowAttributed(model => new { @class = model.IsComplete == true ? "reminder-complete" : null, data_id = model.Id })
+            )
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body bg-light">
+        <h4 class="card-title">Add new reminder</h4>
+
+        <form id="add-list-form" method="post" action="@Url.Action("Add", "Reminder")">
+            <div class="row g-3 mb-2">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="reminderListId" value="@Model.Id" />
+
+                <div class="col-md-6">
+                    <label>Reminder name</label>
+                    <input type="text" class="form-control" id="name" name="name" placeholder="Reminder name" required />
+                </div>
+
+                <div class="col-md-6">
+                    <label>Reminder details</label>
+                    <input type="text" class="form-control" id="details" name="details" placeholder="Reminder details" required />
+                </div>
+            </div>
+
+            <div class="row g-3 mb-2">
+                <div class="col-md-6">
+                    <label>Date Due</label>
+                    <input type="datetime-local" class="form-control" id="dateDue" name="dateDue" value="@(DateTime.Now.AddDays(1).ToString("s"))" required />
+                </div>
+
+                <div class="col-md-6">
+                    <label>Priority</label>
+                    <select class="form-select" id="priority" name="priority" required>
+                        @{
+                            var values = Enum.GetValues(typeof(ReminderPriority)).Cast<ReminderPriority>();
+                            foreach (var value in values)
+                            {
+                                <option value="@value" selected="@(value == ReminderPriority.Medium)">@value</option>
+                            }
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <button type="submit" class="btn btn-primary">Add</button>
+            </div>
+        </form>
+    </div>
+</div>

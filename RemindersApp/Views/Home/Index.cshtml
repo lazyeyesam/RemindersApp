@@ -1,0 +1,49 @@
+﻿@{
+    ViewData["Title"] = "My Reminders";
+}
+
+@model IQueryable<ReminderList>
+
+<div class="card mb-3">
+    <div class="card-body bg-light">
+        <h4 class="card-title">My Reminder Lists</h4>
+        <div class="bg-white">
+            @(Html
+            .Grid(Model)
+            .Build(columns =>
+            {
+                columns.Add(model => model.Name).Titled("Name").RenderedAs(model => Html.ActionLink(model.Name, "Index", "Reminder", new {model.Id}));
+                columns.Add(model => model.Description).Titled("Description");
+                columns.Add(model => Html.ActionLink("Delete", "Delete", "Home", new { model.Id }, new { @class = "btn btn-danger"})).Titled("Delete").Width("5%");
+            })
+            .Using(GridFilterMode.Excel)
+            .Empty("No reminders lists found")
+            .Filterable()
+            .Sortable()
+            .Pageable()
+            )
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body bg-light">
+        <h4 class="card-title">Add new list</h4>
+
+        <form class="row g-3" id="add-list-form" method="post" action="@Url.Action("Add", "Home")">
+            @Html.AntiForgeryToken()
+
+            <div class="col-md-6">
+                <input type="text" class="form-control" id="name" name="name" placeholder="List name" required />
+            </div>
+
+            <div class="col-md-6">
+                <input type="text" class="form-control" id="description" name="description" placeholder="List description" required />
+            </div>
+
+            <div class="col-md-12">
+                <button type="submit" class="btn btn-primary">Add</button>
+            </div>
+        </form>
+    </div>
+</div>
